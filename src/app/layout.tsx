@@ -1,0 +1,50 @@
+import type { Metadata } from "next";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import "./globals.css";
+import Providers from "@/components/providers";
+import TopBanner from "@/components/layout/TopBanner";
+import Navbar from "@/components/layout/Navbar";
+import SubNav from "@/components/layout/SubNav";
+import MobileNav from "@/components/layout/MobileNav";
+import Footer from "@/components/layout/Footer";
+import CartDrawer from "@/components/cart/CartDrawer";
+
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "MediQuick — India's Best Generic Medicine Delivery",
+  description: "Order 100% authentic WHO-GMP certified generic medicines online with up to 80% savings. Express delivery in 2 hours across India.",
+  keywords: ["online pharmacy", "generic medicines", "buy medicine online", "discount pharmacy India", "MediQuick"],
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`} suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-primary/20 selection:text-primary-dark pb-16 md:pb-0`}>
+        <Providers>
+          <TopBanner />
+          <Navbar />
+          <SubNav />
+          <CartDrawer />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <MobileNav />
+        </Providers>
+      </body>
+    </html>
+  );
+}

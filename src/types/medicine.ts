@@ -1,0 +1,26 @@
+export interface Medicine {
+  id: string;
+  name: string;
+  brand: string;
+  slug: string;
+  composition: string; // e.g., "Paracetamol 500mg"
+  mrp: number;
+  price: number;
+  discountPercentage: number;
+  prescriptionRequired: boolean;
+  category: string;
+  imageUrl: string;
+  stock: number;
+  rating: number;
+  reviewsCount: number;
+  description: string;
+  directions: string;
+  sideEffects: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string; // URL to icon
+}
