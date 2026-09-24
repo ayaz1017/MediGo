@@ -1,4 +1,5 @@
 import { Smartphone, Star, Download, QrCode } from "lucide-react";
+import Link from "next/link";
 
 export default function AppDownloadBanner() {
   return (
@@ -45,8 +46,8 @@ export default function AppDownloadBanner() {
 
             {/* Right Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0">
-              <a
-                href="#"
+              <Link
+                href="/"
                 className="flex items-center gap-3 bg-black hover:bg-slate-900 border border-white/20 text-white px-6 py-3.5 rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <div className="text-2xl">🍎</div>
@@ -54,10 +55,10 @@ export default function AppDownloadBanner() {
                   <p className="text-[10px] text-slate-400 leading-none uppercase font-semibold">Download on</p>
                   <p className="text-sm font-black leading-tight">App Store</p>
                 </div>
-              </a>
+              </Link>
 
-              <a
-                href="#"
+              <Link
+                href="/"
                 className="flex items-center gap-3 bg-black hover:bg-slate-900 border border-white/20 text-white px-6 py-3.5 rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0"
               >
                 <div className="text-2xl">🤖</div>
@@ -65,7 +66,7 @@ export default function AppDownloadBanner() {
                   <p className="text-[10px] text-slate-400 leading-none uppercase font-semibold">Get it on</p>
                   <p className="text-sm font-black leading-tight">Google Play</p>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

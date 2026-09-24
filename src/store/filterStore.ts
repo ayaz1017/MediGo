@@ -7,6 +7,8 @@ interface FilterState {
   minPrice: number;
   maxPrice: number;
   minDiscount: number;
+  maxDiscount: number;
+  inStockOnly: boolean;
   prescriptionRequired: boolean | null;
   sortBy: "relevance" | "price_asc" | "price_desc" | "discount" | "newest";
 
@@ -14,7 +16,9 @@ interface FilterState {
   toggleCategory: (category: string) => void;
   toggleBrand: (brand: string) => void;
   setPriceRange: (min: number, max: number) => void;
+  setDiscountRange: (min: number, max: number) => void;
   setMinDiscount: (discount: number) => void;
+  setInStockOnly: (inStockOnly: boolean) => void;
   setPrescriptionRequired: (required: boolean | null) => void;
   setSortBy: (sort: FilterState["sortBy"]) => void;
   clearFilters: () => void;
@@ -27,6 +31,8 @@ const initialState = {
   minPrice: 0,
   maxPrice: 10000,
   minDiscount: 0,
+  maxDiscount: 80,
+  inStockOnly: false,
   prescriptionRequired: null,
   sortBy: "relevance" as const,
 };
@@ -47,7 +53,9 @@ export const useFilterStore = create<FilterState>((set) => ({
         : [...state.brands, brand],
     })),
   setPriceRange: (minPrice, maxPrice) => set({ minPrice, maxPrice }),
+  setDiscountRange: (minDiscount, maxDiscount) => set({ minDiscount, maxDiscount }),
   setMinDiscount: (minDiscount) => set({ minDiscount }),
+  setInStockOnly: (inStockOnly) => set({ inStockOnly }),
   setPrescriptionRequired: (prescriptionRequired) => set({ prescriptionRequired }),
   setSortBy: (sortBy) => set({ sortBy }),
   clearFilters: () => set(initialState),

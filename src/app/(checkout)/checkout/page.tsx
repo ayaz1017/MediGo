@@ -1,6 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
+import { useOrderStore } from "@/store/orderStore";
 import { useState } from "react";
 import Link from "next/link";
 import { 
@@ -24,7 +25,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, cartTotal, clearCart } = useCartStore();
+  const { items, subtotal, totalSavings, deliveryFee, total, appliedCoupon, clearCart } = useCartStore();
+  const addOrder = useOrderStore((state) => state.addOrder);
   
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [paymentMode, setPaymentMode] = useState<"Online" | "COD">("Online");
@@ -69,10 +71,10 @@ export default function CheckoutPage() {
     type: "Home"
   });
 
-  const subtotal = cartTotal();
-  const deliveryFee = subtotal >= 499 ? 0 : 50;
-  const onlineDiscount = paymentMode === "Online" ? Math.round(subtotal * 0.05) : 0;
-  const total = Math.max(0, subtotal + deliveryFee - onlineDiscount);
+  const checkoutSubtotal = subtotal();
+  const checkoutSavings = totalSavings();
+  const checkoutDeliveryFee = deliveryFee();
+  const checkoutTotal = total();
   const hasPrescriptionItems = items.some((item) => item.medicine.prescriptionRequired);
 
   const handleAddNewAddress = (e: React.FormEvent) => {
@@ -101,6 +103,17 @@ export default function CheckoutPage() {
     setIsProcessing(true);
     setTimeout(() => {
       setIsProcessing(false);
+      addOrder({
+        id: `OD${Math.floor(Math.random() * 1000000000)}`,
+        date: new Date().toISOString(),
+        status: "Confirmed",
+        total: checkoutTotal,
+        items: items.map((i) => ({
+          name: i.medicine.name,
+          quantity: i.quantity,
+          price: i.medicine.price,
+        })),
+      });
       clearCart();
       toast.success("Order confirmed successfully!");
       router.push("/order-success");
@@ -432,7 +445,7 @@ export default function CheckoutPage() {
                     onClick={() => setStep(3)}
                     className="flex-1 bg-primary text-white py-3.5 rounded-2xl font-bold hover:bg-primary-dark transition flex items-center justify-center gap-2 shadow-md text-xs sm:text-sm"
                   >
-                    Continue to Payment (₹{total}) <ArrowRight size={16} />
+                    Continue to Payment (₹{checkoutTotal}) <ArrowRight size={16} />
                   </button>
                 </div>
               </motion.div>
@@ -484,7 +497,7 @@ export default function CheckoutPage() {
                         </span>
                       </div>
                       <p className="text-xs text-green-700 font-bold mb-3">
-                        ⚡ Instant 5% extra online payment discount applied automatically!
+                        ⚡ Fast and secure instant payment via UPI, Cards, or Net Banking
                       </p>
 
                       {/* Payment Logos Strip */}
@@ -538,21 +551,27 @@ export default function CheckoutPage() {
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 mb-8 text-xs sm:text-sm">
                   <div className="flex justify-between text-slate-600">
                     <span>Items Subtotal</span>
-                    <span>₹{subtotal}</span>
+                    <span>₹{checkoutSubtotal}</span>
                   </div>
+                  {checkoutSavings > 0 && (
+                    <div className="flex justify-between text-green-600 font-semibold">
+                      <span>You saved</span>
+                      <span>-₹{checkoutSavings}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-slate-600">
                     <span>Delivery Charges</span>
-                    <span>{deliveryFee === 0 ? <strong className="text-green-600">FREE</strong> : `₹${deliveryFee}`}</span>
+                    <span>{checkoutDeliveryFee === 0 ? <strong className="text-green-600">FREE</strong> : `₹${checkoutDeliveryFee}`}</span>
                   </div>
-                  {onlineDiscount > 0 && (
+                  {appliedCoupon && appliedCoupon.discount > 0 && (
                     <div className="flex justify-between text-green-600 font-bold">
-                      <span>Online Payment 5% Discount</span>
-                      <span>-₹{onlineDiscount}</span>
+                      <span>Coupon Discount ({appliedCoupon.code})</span>
+                      <span>-₹{appliedCoupon.discount}</span>
                     </div>
                   )}
                   <div className="flex justify-between items-baseline pt-2 border-t border-slate-200 font-black text-base sm:text-lg text-slate-900">
                     <span>Final Amount to Pay</span>
-                    <span className="text-primary text-xl sm:text-2xl">₹{total}</span>
+                    <span className="text-primary text-xl sm:text-2xl">₹{checkoutTotal}</span>
                   </div>
                 </div>
 
@@ -572,7 +591,7 @@ export default function CheckoutPage() {
                     {isProcessing ? (
                       <span>Processing Order...</span>
                     ) : (
-                      <span>{paymentMode === "Online" ? `Pay ₹${total} via UPI / Card` : `Place COD Order (₹${total})`}</span>
+                      <span>{paymentMode === "Online" ? `Pay ₹${checkoutTotal} via UPI / Card` : `Place COD Order (₹${checkoutTotal})`}</span>
                     )}
                   </button>
                 </div>

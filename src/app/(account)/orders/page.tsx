@@ -1,33 +1,29 @@
 "use client";
 
-import { Package, ChevronRight } from "lucide-react";
+import { Package, ChevronRight, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-
-const mockOrders = [
-  {
-    id: "OD9876543210",
-    date: "2026-09-20",
-    status: "Delivered",
-    total: 350,
-    items: ["Dolo 650 Tablet", "Volini Spray"],
-  },
-  {
-    id: "OD1234567890",
-    date: "2026-09-22",
-    status: "Confirmed",
-    total: 180,
-    items: ["Augmentin 625 Duo Tablet"],
-  }
-];
+import { useOrderStore } from "@/store/orderStore";
 
 export default function OrdersPage() {
+  const orders = useOrderStore((state) => state.orders);
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
       <h2 className="text-2xl font-bold text-slate-900 mb-6">My Orders</h2>
       
       <div className="space-y-4">
-        {mockOrders.map(order => (
-          <div key={order.id} className="border border-slate-200 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-colors">
+        {orders.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
+              <ShoppingBag size={24} />
+            </div>
+            <h3 className="text-lg font-bold text-slate-800 mb-1">No orders yet</h3>
+            <p className="text-sm text-slate-500 mb-4">You haven't placed any orders yet.</p>
+            <Link href="/medicines" className="inline-block px-5 py-2.5 bg-primary text-white font-bold text-sm rounded-xl">
+              Start Shopping
+            </Link>
+          </div>
+        ) : orders.map((order) => (
+            <div key={order.id} className="border border-slate-200 rounded-xl p-4 sm:p-6 hover:border-primary/50 transition-colors">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <div>
                 <div className="flex items-center gap-3 mb-1">
@@ -50,7 +46,9 @@ export default function OrdersPage() {
             <div className="border-t border-slate-100 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3 text-sm text-slate-600">
                 <Package size={18} className="text-slate-400" />
-                <span className="truncate max-w-[200px] sm:max-w-md">{order.items.join(", ")}</span>
+                <span className="truncate max-w-[200px] sm:max-w-md">
+                  {order.items.map((i) => i.name).join(", ")}
+                </span>
               </div>
               <Link href="#" className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark">
                 View Details <ChevronRight size={16} />

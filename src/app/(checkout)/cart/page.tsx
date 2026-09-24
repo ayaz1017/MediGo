@@ -20,16 +20,26 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, cartTotal } = useCartStore();
+  const { 
+    items, 
+    updateQuantity, 
+    removeItem, 
+    subtotal,
+    totalSavings,
+    deliveryFee, 
+    total, 
+    appliedCoupon, 
+    setCoupon, 
+    clearCoupon 
+  } = useCartStore();
   const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
 
-  const subtotal = cartTotal();
+  const cartSubtotal = subtotal();
+  const cartSavings = totalSavings();
+  const cartDeliveryFee = deliveryFee();
+  const cartTotal = total();
   const hasPrescriptionItems = items.some((item) => item.medicine.prescriptionRequired);
-  
   const freeDeliveryThreshold = 499;
-  const isFreeDelivery = subtotal >= freeDeliveryThreshold || appliedCoupon?.code === "FREEDEL";
-  const deliveryFee = items.length === 0 ? 0 : isFreeDelivery ? 0 : 50;
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,19 +47,19 @@ export default function CartPage() {
     if (!code) return;
 
     if (code === "FIRST20") {
-      const disc = Math.round(subtotal * 0.2);
-      setAppliedCoupon({ code, discount: Math.min(150, disc) });
+      const disc = Math.round(cartSubtotal * 0.2);
+      setCoupon({ code, discount: Math.min(150, disc) });
       toast.success("Coupon FIRST20 applied! 20% discount added.");
     } else if (code === "GENERIC50") {
-      const disc = Math.round(subtotal * 0.15);
-      setAppliedCoupon({ code, discount: disc });
+      const disc = Math.round(cartSubtotal * 0.15);
+      setCoupon({ code, discount: disc });
       toast.success("Coupon GENERIC50 applied! Extra generic discount added.");
     } else if (code === "FREEDEL") {
-      setAppliedCoupon({ code, discount: 50 });
+      setCoupon({ code, discount: 0 });
       toast.success("Coupon FREEDEL applied! Free shipping unlocked.");
     } else if (code === "HEALTH25") {
-      const disc = Math.round(subtotal * 0.25);
-      setAppliedCoupon({ code, discount: Math.min(250, disc) });
+      const disc = Math.round(cartSubtotal * 0.25);
+      setCoupon({ code, discount: Math.min(250, disc) });
       toast.success("Coupon HEALTH25 applied! 25% discount added.");
     } else {
       toast.error("Invalid coupon code. Try FIRST20 or FREEDEL.");
@@ -57,13 +67,12 @@ export default function CartPage() {
   };
 
   const removeCoupon = () => {
-    setAppliedCoupon(null);
+    clearCoupon();
     setCouponCode("");
     toast.info("Coupon removed.");
   };
 
   const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
-  const total = Math.max(0, subtotal + deliveryFee - couponDiscount);
 
   if (items.length === 0) {
     return (
@@ -109,13 +118,13 @@ export default function CartPage() {
             <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
                 <Truck size={18} className="text-primary shrink-0" />
-                {subtotal >= freeDeliveryThreshold ? (
+                {cartSubtotal >= freeDeliveryThreshold || cartDeliveryFee === 0 ? (
                   <span className="text-green-700 font-bold">
                     You have unlocked FREE Standard Delivery!
                   </span>
                 ) : (
                   <span>
-                    Add <strong className="text-primary">₹{freeDeliveryThreshold - subtotal}</strong> more for <strong>FREE Delivery</strong>
+                    Add <strong className="text-primary">₹{freeDeliveryThreshold - cartSubtotal}</strong> more for <strong>FREE Delivery</strong>
                   </span>
                 )}
               </div>
@@ -246,7 +255,9 @@ export default function CartPage() {
                     <Check size={16} className="text-green-600 shrink-0" />
                     <div>
                       <span className="font-bold text-xs text-green-900 block">{appliedCoupon.code} Applied</span>
-                      <span className="text-[11px] text-green-700">Saved ₹{appliedCoupon.discount}</span>
+                      <span className="text-[11px] text-green-700">
+                        {appliedCoupon.code === "FREEDEL" ? "Free delivery unlocked (₹50 off)" : `Saved ₹${appliedCoupon.discount}`}
+                      </span>
                     </div>
                   </div>
                   <button 
@@ -279,12 +290,18 @@ export default function CartPage() {
               <div className="space-y-2.5 text-xs sm:text-sm mb-6 pb-6 border-b border-slate-100">
                 <div className="flex justify-between text-slate-600">
                   <span>Cart Subtotal ({items.reduce((acc, i) => acc + i.quantity, 0)} items)</span>
-                  <span className="font-semibold text-slate-900">₹{subtotal}</span>
+                  <span className="font-semibold text-slate-900">₹{cartSubtotal}</span>
                 </div>
+                {cartSavings > 0 && (
+                  <div className="flex justify-between text-green-600 font-semibold">
+                    <span>You saved</span>
+                    <span>-₹{cartSavings}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-slate-600">
                   <span>Estimated Delivery</span>
                   <span className="font-semibold text-slate-900">
-                    {deliveryFee === 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${deliveryFee}`}
+                    {cartDeliveryFee === 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${cartDeliveryFee}`}
                   </span>
                 </div>
                 {couponDiscount > 0 && (
@@ -301,7 +318,7 @@ export default function CartPage() {
                   <span className="font-bold text-slate-900 text-base">Total Payable</span>
                   <p className="text-[10px] text-slate-400">Inclusive of all applicable taxes</p>
                 </div>
-                <span className="font-black text-primary text-2xl">₹{total}</span>
+                <span className="font-black text-primary text-2xl">₹{cartTotal}</span>
               </div>
 
               <Link 

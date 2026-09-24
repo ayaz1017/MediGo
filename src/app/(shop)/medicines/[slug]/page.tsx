@@ -23,7 +23,7 @@ import {
   Package
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as Tabs from "@radix-ui/react-tabs";
 import { toast } from "sonner";
@@ -44,22 +44,22 @@ export default function MedicineDetailPage({ params }: { params: { slug: string 
     return allMedicines.find((m) => m.slug === params.slug) || allMedicines[0];
   }, [params.slug]);
 
-  // Alternate images for gallery strip
+  // Gallery images directly from medicine data
   const galleryImages = useMemo(() => {
-    const primary = medicine.imageUrl || "/products/catalogue-1.jpg";
-    // pick 2-3 alternate catalogue images from the catalogue list for realistic packaging views
-    const otherProducts = allMedicines.filter((m) => m.id !== medicine.id);
-    const alt1 = otherProducts[(parseInt(medicine.id.replace(/\D/g, "") || "1", 10) * 3) % otherProducts.length]?.imageUrl || "/products/catalogue-2.jpg";
-    const alt2 = otherProducts[(parseInt(medicine.id.replace(/\D/g, "") || "1", 10) * 7) % otherProducts.length]?.imageUrl || "/products/catalogue-3.jpg";
-    return [primary, alt1, alt2];
+    if (medicine.images && medicine.images.length > 0) {
+      return medicine.images;
+    }
+    return [medicine.imageUrl || "/products/catalogue-1.jpg"];
   }, [medicine]);
 
-  const [activeImage, setActiveImage] = useState<string>(galleryImages[0]);
+  const [activeImage, setActiveImage] = useState<string>(
+    medicine.images?.[0] || medicine.imageUrl || "/products/catalogue-1.jpg"
+  );
 
-  // Reset active image when slug changes
-  useMemo(() => {
-    setActiveImage(medicine.imageUrl || "/products/catalogue-1.jpg");
-  }, [medicine]);
+  // Reset active image when medicine slug changes
+  useEffect(() => {
+    setActiveImage(medicine.images?.[0] || medicine.imageUrl || "/products/catalogue-1.jpg");
+  }, [medicine.slug, medicine.images, medicine.imageUrl]);
 
   // Similar medicines in same category or similar price
   const similarMedicines = useMemo(() => {
@@ -367,6 +367,7 @@ export default function MedicineDetailPage({ params }: { params: { slug: string 
                 { id: "directions", label: "Dosage & Directions" },
                 { id: "sideEffects", label: "Side Effects & Safety" },
                 { id: "specifications", label: "Drug Specifications" },
+                { id: "faqs", label: "FAQs" },
               ].map((tab) => (
                 <Tabs.Trigger 
                   key={tab.id}
@@ -436,6 +437,24 @@ export default function MedicineDetailPage({ params }: { params: { slug: string 
                   <span className="font-bold text-slate-800">India (Made in India)</span>
                 </div>
               </div>
+            </Tabs.Content>
+
+            <Tabs.Content value="faqs" className="outline-none text-sm space-y-4">
+              <h3 className="font-bold text-slate-900 text-lg mb-4">Frequently Asked Questions</h3>
+              {medicine.faqs && medicine.faqs.length > 0 ? (
+                <div className="space-y-3">
+                  {medicine.faqs.map((faq, idx) => (
+                    <div key={idx} className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                      <h4 className="font-bold text-slate-900 text-sm mb-1.5 flex items-start gap-2">
+                        <span className="text-primary font-black">Q{idx + 1}.</span> {faq.question}
+                      </h4>
+                      <p className="text-slate-600 text-sm leading-relaxed pl-6">{faq.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-500 text-sm">No FAQs available for this medicine.</p>
+              )}
             </Tabs.Content>
           </Tabs.Root>
         </div>

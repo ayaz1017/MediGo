@@ -19,7 +19,7 @@ export default function LoginPage() {
     if (email && password) {
       login({ id: "1", name: "Ayaz Khan", phone: "9876543210", email });
       toast.success("Successfully logged in");
-      router.push("/");
+      router.push("/profile");
     }
   };
 

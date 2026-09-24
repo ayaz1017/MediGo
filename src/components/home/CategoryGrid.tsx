@@ -45,7 +45,7 @@ export default function CategoryGrid() {
             return (
               <Link
                 key={cat.id}
-                href={`/medicines?category=${cat.slug}`}
+                href={`/categories/${cat.slug}`}
                 className="group flex flex-col items-center p-4 rounded-2xl bg-white border border-slate-200 hover:border-primary transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md text-center"
               >
                 <div className={`w-14 h-14 rounded-2xl ${cat.color} border flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>

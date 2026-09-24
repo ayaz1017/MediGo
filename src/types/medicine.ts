@@ -16,6 +16,13 @@ export interface Medicine {
   description: string;
   directions: string;
   sideEffects: string;
+  genericName: string;
+  images: string[];
+  packSize: string;
+  dosage: string;
+  manufacturer: string;
+  faqs: { question: string; answer: string }[];
+  tags: string[];
 }
 
 export interface Category {

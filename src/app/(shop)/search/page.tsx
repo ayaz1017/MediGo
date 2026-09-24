@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { allMedicines } from "@/data/medicines";
+import { filterMedicines } from "@/utils/filterMedicines";
 import MedicineCard from "@/components/medicine/MedicineCard";
 import { 
   Search, 
@@ -48,39 +49,11 @@ function SearchContent() {
   ];
 
   const searchResults = useMemo(() => {
-    const q = searchTerm.trim().toLowerCase();
-    
-    return allMedicines.filter((item) => {
-      // Query search
-      if (q) {
-        const matchesName = item.name.toLowerCase().includes(q);
-        const matchesComposition = item.composition.toLowerCase().includes(q);
-        const matchesBrand = item.brand.toLowerCase().includes(q);
-        const matchesCategory = item.category.toLowerCase().includes(q);
-        const matchesDesc = item.description.toLowerCase().includes(q);
-
-        if (!matchesName && !matchesComposition && !matchesBrand && !matchesCategory && !matchesDesc) {
-          return false;
-        }
-      }
-
-      // Category filter
-      if (selectedCategory !== "all") {
-        const matchesCategory = item.category.toLowerCase() === selectedCategory || 
-          item.description.toLowerCase().includes(selectedCategory.replace("-", " "));
-        if (!matchesCategory) return false;
-      }
-
-      // Rx filter
-      if (rxFilter === "otc" && item.prescriptionRequired) return false;
-      if (rxFilter === "rx" && !item.prescriptionRequired) return false;
-
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === "price-asc") return a.price - b.price;
-      if (sortBy === "price-desc") return b.price - a.price;
-      if (sortBy === "discount") return b.discountPercentage - a.discountPercentage;
-      return b.rating - a.rating;
+    return filterMedicines({
+      query: searchTerm,
+      category: selectedCategory,
+      rxFilter,
+      sortBy
     });
   }, [searchTerm, selectedCategory, rxFilter, sortBy]);
 

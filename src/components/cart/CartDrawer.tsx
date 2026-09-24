@@ -9,7 +9,18 @@ import { useRouter } from "next/navigation";
 
 export default function CartDrawer() {
   const router = useRouter();
-  const { isDrawerOpen, closeDrawer, items, updateQuantity, removeItem, cartTotal } = useCartStore();
+  const { 
+    isDrawerOpen, 
+    closeDrawer, 
+    items, 
+    updateQuantity, 
+    removeItem, 
+    subtotal, 
+    totalSavings,
+    deliveryFee, 
+    total,
+    appliedCoupon 
+  } = useCartStore();
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -22,10 +33,13 @@ export default function CartDrawer() {
     };
   }, [isDrawerOpen]);
 
-  const subtotal = cartTotal();
+  const cartSubtotal = subtotal();
+  const cartSavings = totalSavings();
+  const currentDeliveryFee = deliveryFee();
+  const cartTotalAmount = total();
   const freeDeliveryThreshold = 499;
-  const progressPercent = Math.min(100, Math.round((subtotal / freeDeliveryThreshold) * 100));
-  const remainingForFreeDelivery = Math.max(0, freeDeliveryThreshold - subtotal);
+  const progressPercent = Math.min(100, Math.round((cartSubtotal / freeDeliveryThreshold) * 100));
+  const remainingForFreeDelivery = Math.max(0, freeDeliveryThreshold - cartSubtotal);
 
   const handleProceedToCheckout = () => {
     closeDrawer();
@@ -191,13 +205,29 @@ export default function CartDrawer() {
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between text-slate-500 font-medium">
                     <span>Subtotal</span>
-                    <span className="font-bold text-slate-900 text-sm">₹{subtotal}</span>
+                    <span className="font-bold text-slate-900 text-sm">₹{cartSubtotal}</span>
                   </div>
+                  {cartSavings > 0 && (
+                    <div className="flex justify-between text-green-600 font-semibold">
+                      <span>You saved</span>
+                      <span>-₹{cartSavings}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-slate-500">
                     <span>Delivery</span>
                     <span className="font-semibold text-slate-900">
-                      {remainingForFreeDelivery === 0 ? <span className="text-green-600 font-bold">FREE</span> : "₹50"}
+                      {currentDeliveryFee === 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${currentDeliveryFee}`}
                     </span>
+                  </div>
+                  {appliedCoupon && appliedCoupon.discount > 0 && (
+                    <div className="flex justify-between text-green-600 font-semibold">
+                      <span>Coupon ({appliedCoupon.code})</span>
+                      <span>-₹{appliedCoupon.discount}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-slate-900 font-bold pt-1 border-t border-slate-200">
+                    <span>Total</span>
+                    <span className="text-sm font-black text-slate-900">₹{cartTotalAmount}</span>
                   </div>
                 </div>
 

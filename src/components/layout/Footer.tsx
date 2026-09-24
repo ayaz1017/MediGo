@@ -39,18 +39,18 @@ export default function Footer() {
 
             {/* Social Links */}
             <div className="flex gap-3">
-              <a href="#" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
+              <Link href="/" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Facebook">
                 <Facebook size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Instagram">
+              </Link>
+              <Link href="/" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Instagram">
                 <Instagram size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Twitter">
+              </Link>
+              <Link href="/" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="Twitter">
                 <Twitter size={18} />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="YouTube">
+              </Link>
+              <Link href="/" className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-colors" aria-label="YouTube">
                 <Youtube size={18} />
-              </a>
+              </Link>
             </div>
           </div>
 

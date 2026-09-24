@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { allMedicines } from "@/data/medicines";
+import { filterMedicines } from "@/utils/filterMedicines";
 import MedicineCard from "@/components/medicine/MedicineCard";
 import { ChevronRight, Filter, Search, SlidersHorizontal, ArrowUpDown, Sparkles, ShieldCheck } from "lucide-react";
 
@@ -83,37 +84,11 @@ export default function CategoryDetailPage({ params }: { params: { cat: string }
   };
 
   const filteredMedicines = useMemo(() => {
-    return allMedicines.filter((m) => {
-      // Category match: exact or fallback if generic catalog items map broadly
-      const matchesCat = m.category.toLowerCase() === catSlug || 
-        (catSlug === "baby-care" && (m.category === "pediatrics" || m.name.toLowerCase().includes("syrup") || m.name.toLowerCase().includes("drop"))) ||
-        (catSlug === "heart" && (m.category === "cardiac" || m.name.toLowerCase().includes("telmi") || m.name.toLowerCase().includes("atorv"))) ||
-        (catSlug === "diabetes" && (m.category === "diabetes" || m.name.toLowerCase().includes("metfor") || m.name.toLowerCase().includes("glim"))) ||
-        (catSlug === "fever-pain" && (m.category === "fever-pain" || m.name.toLowerCase().includes("para") || m.name.toLowerCase().includes("acecl"))) ||
-        m.description.toLowerCase().includes(catSlug.replace("-", " "));
-
-      if (!matchesCat) return false;
-
-      // Search term within category
-      if (searchTerm.trim()) {
-        const query = searchTerm.toLowerCase();
-        const matchesQuery = 
-          m.name.toLowerCase().includes(query) || 
-          m.composition.toLowerCase().includes(query) || 
-          m.brand.toLowerCase().includes(query);
-        if (!matchesQuery) return false;
-      }
-
-      // Rx filter
-      if (rxFilter === "otc" && m.prescriptionRequired) return false;
-      if (rxFilter === "rx" && !m.prescriptionRequired) return false;
-
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === "price-asc") return a.price - b.price;
-      if (sortBy === "price-desc") return b.price - a.price;
-      if (sortBy === "discount") return b.discountPercentage - a.discountPercentage;
-      return b.rating - a.rating;
+    return filterMedicines({
+      category: catSlug,
+      query: searchTerm,
+      rxFilter,
+      sortBy
     });
   }, [catSlug, searchTerm, sortBy, rxFilter]);
 

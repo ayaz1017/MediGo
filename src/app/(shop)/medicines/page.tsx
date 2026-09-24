@@ -3,6 +3,7 @@
 import FilterSidebar from "@/components/medicine/FilterSidebar";
 import MedicineCard from "@/components/medicine/MedicineCard";
 import { allMedicines } from "@/data/medicines";
+import { filterMedicines } from "@/utils/filterMedicines";
 import { useFilterStore } from "@/store/filterStore";
 import { Filter, Search, X, ChevronRight, RotateCcw } from "lucide-react";
 import Link from "next/link";
@@ -16,6 +17,11 @@ export default function MedicinesPage() {
     toggleBrand,
     minPrice,
     maxPrice,
+    minDiscount,
+    maxDiscount,
+    setDiscountRange,
+    inStockOnly,
+    setInStockOnly,
     prescriptionRequired,
     setPrescriptionRequired,
     sortBy,
@@ -27,49 +33,42 @@ export default function MedicinesPage() {
   const [localSearch, setLocalSearch] = useState("");
 
   const filteredMedicines = useMemo(() => {
-    return allMedicines
-      .filter((item) => {
-        // Local keyword search
-        if (localSearch.trim()) {
-          const q = localSearch.toLowerCase();
-          const matchName = item.name.toLowerCase().includes(q);
-          const matchComp = item.composition.toLowerCase().includes(q);
-          const matchBrand = item.brand.toLowerCase().includes(q);
-          if (!matchName && !matchComp && !matchBrand) return false;
-        }
+    // We apply the selected categories in a loop or handle it inside the filterStore, 
+    // but the common function only accepts a single category string.
+    // For multiple categories support in filterMedicines, we'd need an array. 
+    // Let's just adjust it here manually or use filterMedicines as the base and then filter by categories/brands.
+    
+    // Actually, filterMedicines is for reuse, let's use it for the base filters:
+    let results = filterMedicines({
+      query: localSearch,
+      minPrice,
+      maxPrice,
+      minDiscount,
+      maxDiscount,
+      inStockOnly,
+      prescriptionRequired: prescriptionRequired === null ? undefined : prescriptionRequired,
+      sortBy
+    });
 
-        // Category filter
-        if (categories.length > 0 && !categories.includes(item.category)) {
-          return false;
-        }
+    if (categories.length > 0) {
+      results = results.filter(m => categories.includes(m.category));
+    }
+    
+    if (brands.length > 0) {
+      results = results.filter(m => brands.includes(m.brand));
+    }
 
-        // Brand filter
-        if (brands.length > 0 && !brands.includes(item.brand)) {
-          return false;
-        }
+    return results;
+  }, [localSearch, categories, brands, minPrice, maxPrice, minDiscount, maxDiscount, inStockOnly, prescriptionRequired, sortBy]);
 
-        // Price range
-        if (item.price < minPrice || item.price > maxPrice) {
-          return false;
-        }
-
-        // Prescription
-        if (prescriptionRequired !== null && item.prescriptionRequired !== prescriptionRequired) {
-          return false;
-        }
-
-        return true;
-      })
-      .sort((a, b) => {
-        if (sortBy === "price_asc") return a.price - b.price;
-        if (sortBy === "price_desc") return b.price - a.price;
-        if (sortBy === "discount") return b.discountPercentage - a.discountPercentage;
-        if (sortBy === "newest") return b.id.localeCompare(a.id);
-        return 0;
-      });
-  }, [localSearch, categories, brands, minPrice, maxPrice, prescriptionRequired, sortBy]);
-
-  const hasActiveFilters = categories.length > 0 || brands.length > 0 || prescriptionRequired !== null || localSearch !== "";
+  const hasActiveFilters = 
+    categories.length > 0 || 
+    brands.length > 0 || 
+    prescriptionRequired !== null || 
+    localSearch !== "" || 
+    inStockOnly || 
+    minDiscount > 0 || 
+    maxDiscount < 80;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -164,6 +163,24 @@ export default function MedicinesPage() {
                 <span className="inline-flex items-center gap-1 bg-orange-50 border border-orange-200 text-accent text-xs px-2.5 py-0.5 rounded-full font-bold">
                   {prescriptionRequired ? "Prescription Only" : "Non-Prescription"}
                   <button onClick={() => setPrescriptionRequired(null)} aria-label="Clear prescription filter">
+                    <X size={12} />
+                  </button>
+                </span>
+              )}
+
+              {inStockOnly && (
+                <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-2.5 py-0.5 rounded-full font-bold">
+                  In Stock Only
+                  <button onClick={() => setInStockOnly(false)} aria-label="Clear in-stock filter">
+                    <X size={12} />
+                  </button>
+                </span>
+              )}
+
+              {(minDiscount > 0 || maxDiscount < 80) && (
+                <span className="inline-flex items-center gap-1 bg-purple-50 border border-purple-200 text-purple-700 text-xs px-2.5 py-0.5 rounded-full font-bold">
+                  {minDiscount}% - {maxDiscount}% Off
+                  <button onClick={() => setDiscountRange(0, 80)} aria-label="Clear discount filter">
                     <X size={12} />
                   </button>
                 </span>

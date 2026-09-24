@@ -39,7 +39,7 @@ export default function HealthConcernsGrid() {
           {concerns.map((concern) => (
             <Link
               key={concern.name}
-              href={`/medicines?category=${concern.slug}`}
+              href={`/categories/${concern.slug}`}
               className="group bg-white rounded-2xl border border-slate-200 hover:border-primary p-4 flex flex-col items-center text-center transition-all duration-300 transform hover:-translate-y-1 hover:shadow-md"
             >
               <div className="w-12 h-12 rounded-2xl bg-slate-50 group-hover:bg-green-50 flex items-center justify-center text-2xl mb-2.5 transition-colors">
