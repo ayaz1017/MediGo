@@ -48,13 +48,7 @@ export function filterMedicines(options: FilterOptions): Medicine[] {
         const catSlug = category.toLowerCase();
         const matchesCategory =
           item.category.toLowerCase() === catSlug ||
-          (catSlug === "baby-care" && (item.category === "pediatrics" || item.name.toLowerCase().includes("syrup") || item.name.toLowerCase().includes("drop"))) ||
-          (catSlug === "heart" && (item.category === "cardiac" || item.name.toLowerCase().includes("telmi") || item.name.toLowerCase().includes("atorv"))) ||
-          (catSlug === "diabetes" && (item.category === "diabetes" || item.name.toLowerCase().includes("metfor") || item.name.toLowerCase().includes("glim") || item.description.toLowerCase().includes("diabet") || item.description.toLowerCase().includes("sugar") || item.category === "digestion")) ||
-          (catSlug === "fever-pain" && (item.category === "fever-pain" || item.name.toLowerCase().includes("para") || item.name.toLowerCase().includes("acecl"))) ||
-          (catSlug === "eye-care" && (item.name.toLowerCase().includes("drop") || item.category === "vitamins" || item.category === "antibiotics")) ||
-          (catSlug === "ayurveda" && (item.category === "digestion" || item.name.toLowerCase().includes("syrup") || item.description.toLowerCase().includes("herbal") || item.category === "vitamins")) ||
-          item.description.toLowerCase().includes(catSlug.replace("-", " "));
+          (item.tags && item.tags.some(tag => tag.toLowerCase() === catSlug));
           
         if (!matchesCategory) return false;
       }

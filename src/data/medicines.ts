@@ -1275,7 +1275,8 @@ export const allMedicines: Medicine[] =
     "tags": [
       "antibiotics",
       "generic",
-      "healthcare"
+      "healthcare",
+      "baby-care"
     ]
   },
   {
@@ -1420,7 +1421,7 @@ export const allMedicines: Medicine[] =
     "price": 65,
     "discountPercentage": 28,
     "prescriptionRequired": false,
-    "category": "skin-care",
+    "category": "antibiotics",
     "imageUrl": "/products/catalogue-33.jpg",
     "stock": 180,
     "rating": 4.7,
@@ -1449,7 +1450,7 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "skin care",
+      "antibiotics",
       "generic",
       "healthcare"
     ]
@@ -1552,7 +1553,7 @@ export const allMedicines: Medicine[] =
     "price": 65,
     "discountPercentage": 28,
     "prescriptionRequired": false,
-    "category": "skin-care",
+    "category": "antibiotics",
     "imageUrl": "/products/catalogue-36.jpg",
     "stock": 160,
     "rating": 4.8,
@@ -1581,7 +1582,7 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "skin care",
+      "antibiotics",
       "generic",
       "healthcare"
     ]
@@ -1596,7 +1597,7 @@ export const allMedicines: Medicine[] =
     "price": 260,
     "discountPercentage": 25,
     "prescriptionRequired": false,
-    "category": "vitamins",
+    "category": "diabetes",
     "imageUrl": "/products/catalogue-37.jpg",
     "stock": 140,
     "rating": 4.9,
@@ -1625,9 +1626,10 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "vitamins",
+      "diabetes",
       "generic",
-      "healthcare"
+      "healthcare",
+      "vitamins"
     ]
   },
   {
@@ -1684,7 +1686,7 @@ export const allMedicines: Medicine[] =
     "price": 135,
     "discountPercentage": 27,
     "prescriptionRequired": false,
-    "category": "skin-care",
+    "category": "vitamins",
     "imageUrl": "/products/catalogue-39.jpg",
     "stock": 280,
     "rating": 4.9,
@@ -1713,7 +1715,7 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "skin care",
+      "vitamins",
       "generic",
       "healthcare"
     ]
@@ -1728,7 +1730,7 @@ export const allMedicines: Medicine[] =
     "price": 260,
     "discountPercentage": 25,
     "prescriptionRequired": false,
-    "category": "vitamins",
+    "category": "diabetes",
     "imageUrl": "/products/catalogue-40.jpg",
     "stock": 155,
     "rating": 4.8,
@@ -1757,9 +1759,10 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "vitamins",
+      "diabetes",
       "generic",
-      "healthcare"
+      "healthcare",
+      "vitamins"
     ]
   },
   {
@@ -1772,7 +1775,7 @@ export const allMedicines: Medicine[] =
     "price": 165,
     "discountPercentage": 28,
     "prescriptionRequired": false,
-    "category": "vitamins",
+    "category": "digestion",
     "imageUrl": "/products/catalogue-41.jpg",
     "stock": 190,
     "rating": 4.8,
@@ -1801,9 +1804,10 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "vitamins",
+      "digestion",
       "generic",
-      "healthcare"
+      "healthcare",
+      "vitamins"
     ]
   },
   {
@@ -1860,7 +1864,7 @@ export const allMedicines: Medicine[] =
     "price": 140,
     "discountPercentage": 28,
     "prescriptionRequired": false,
-    "category": "vitamins",
+    "category": "diabetes",
     "imageUrl": "/products/catalogue-43.jpg",
     "stock": 160,
     "rating": 4.9,
@@ -1889,9 +1893,10 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "vitamins",
+      "diabetes",
       "generic",
-      "healthcare"
+      "healthcare",
+      "vitamins"
     ]
   },
   {
@@ -1979,7 +1984,8 @@ export const allMedicines: Medicine[] =
     "tags": [
       "digestion",
       "generic",
-      "healthcare"
+      "healthcare",
+      "vitamins"
     ]
   },
   {
@@ -1992,7 +1998,7 @@ export const allMedicines: Medicine[] =
     "price": 780,
     "discountPercentage": 70,
     "prescriptionRequired": false,
-    "category": "vitamins",
+    "category": "fever-pain",
     "imageUrl": "/products/catalogue-46.jpg",
     "stock": 85,
     "rating": 4.9,
@@ -2021,9 +2027,10 @@ export const allMedicines: Medicine[] =
       }
     ],
     "tags": [
-      "vitamins",
+      "fever pain",
       "generic",
-      "healthcare"
+      "healthcare",
+      "vitamins"
     ]
   },
   {
@@ -2067,7 +2074,8 @@ export const allMedicines: Medicine[] =
     "tags": [
       "digestion",
       "generic",
-      "healthcare"
+      "healthcare",
+      "ayurveda"
     ]
   },
   {
@@ -2111,7 +2119,8 @@ export const allMedicines: Medicine[] =
     "tags": [
       "vitamins",
       "generic",
-      "healthcare"
+      "healthcare",
+      "ayurveda"
     ]
   },
   {
@@ -2155,7 +2164,8 @@ export const allMedicines: Medicine[] =
     "tags": [
       "digestion",
       "generic",
-      "healthcare"
+      "healthcare",
+      "ayurveda"
     ]
   }
 ];
